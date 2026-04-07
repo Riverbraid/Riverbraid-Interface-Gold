@@ -11,36 +11,52 @@ const FrequencyMirror = () => {
     };
     
     pulse();
-    const interval = setInterval(pulse, 5000); // Poll every 5 seconds
+    const interval = setInterval(pulse, 5000); 
     return () => clearInterval(interval);
   }, []);
 
-  const getStatusColor = () => {
-    switch (health.status) {
-      case 'NOMINAL': return '#FFD700'; // Gold
-      case 'DECOUPLED': return '#FFA500'; // Amber Pulse
-      case 'OFFLINE': return '#FF4500'; // Red
-      default: return '#555'; // Grey
-    }
+  const theme = {
+    NOMINAL: { color: '#FFD700', label: 'NOMINAL', glow: '0 0 12px #FFD700' },
+    DECOUPLED: { color: '#FFA500', label: 'DECOUPLED', glow: 'none' },
+    OFFLINE: { color: '#FF4500', label: 'OFFLINE', glow: 'none' },
+    INITIALIZING: { color: '#555', label: 'SYNCING', glow: 'none' }
   };
+
+  const currentTheme = theme[health.status] || theme.INITIALIZING;
 
   return (
     <div style={{
-      display: 'flex',
+      display: 'inline-flex',
       alignItems: 'center',
-      gap: '10px',
-      padding: '10px',
-      fontFamily: 'monospace'
+      background: 'rgba(0,0,0,0.3)',
+      border: '1px solid #333',
+      borderRadius: '4px',
+      padding: '4px 12px',
+      gap: '12px',
+      fontFamily: '"JetBrains Mono", monospace',
+      fontSize: '12px',
+      letterSpacing: '1px'
     }}>
+      <style>
+        {`
+          @keyframes amberPulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+          }
+        `}
+      </style>
       <div style={{
-        width: '12px',
-        height: '12px',
+        width: '8px',
+        height: '8px',
         borderRadius: '50%',
-        backgroundColor: getStatusColor(),
-        boxShadow: health.status === 'NOMINAL' ? '0 0 10px #FFD700' : 'none',
-        animation: health.status === 'DECOUPLED' ? 'pulse 1.5s infinite' : 'none'
+        backgroundColor: currentTheme.color,
+        boxShadow: currentTheme.glow,
+        animation: health.status === 'DECOUPLED' ? 'amberPulse 2s infinite ease-in-out' : 'none'
       }} />
-      <span>{health.status} | {health.anchor || '000000'}</span>
+      <span style={{ color: '#eee' }}>
+        {currentTheme.label} <span style={{ color: '#666' }}>[ {health.anchor || '------'} ]</span>
+      </span>
     </div>
   );
 };
