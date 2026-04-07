@@ -1,17 +1,3 @@
-[
-  {
-    "file": "README.md"
-  },
-  {
-    "file": "SPEC.md"
-  },
-  {
-    "file": "TRUTH.md"
-  },
-  {
-    "file": "run-vectors.cjs"
-  },
-  {
-    "file": "swarm_anchor.txt"
-  }
-]
+{
+  "sha256": "7ba117190fb5d8301d9132c11941d5c971fa9eac46ba387f154a582e77c367d5"
+}
