@@ -1,13 +1,10 @@
 # Riverbraid-Interface-Gold
-> Part of the Riverbraid v1.5.0-Genesis Cluster.
+## The Universal Deterministic Sidecar
 
-## Concept
-This repository serves as a functional petal in the deterministic numeric control substrate.
+This module acts as a stateless verification proxy. It intercepts LLM traffic to enforce:
+1. **Entropy Bans:** Rejects non-deterministic tokens.
+2. **State Anchoring:** Maintains the Merkle root of the interaction.
+3. **Fail-Closed Governance:** Blocks unauthorized execution calls.
 
-## Governance
-- **Fingerprint:** D9475D6B717D0E6C8EC84F6D8F86D9F4F2B083A4$
-- **Merkle Root:** $
-- **Status:** Stationary
-
-## Execution
-Managed by Riverbraid-Core v1.5.0.
+### Usage
+Connect your LLM client to `http://localhost:8080/v1`.
