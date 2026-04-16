@@ -6,6 +6,7 @@ console.log("💎 RIVERBRAID BOOT SEQUENCE INITIATED");
 try {
     // Stage 0: Physical Sovereignty (Core Enforcer)
     console.log("[Stage 0]: Thermodynamic Enforcer...");
+    execSync("node /workspaces/Riverbraid-Core/bin/recovery/sentinel.cjs", { stdio: "inherit" });
     execSync('node /workspaces/Riverbraid-Core/bin/enforcer.cjs', { stdio: 'inherit' });
 
     // Stage 1: Relational Alignment
