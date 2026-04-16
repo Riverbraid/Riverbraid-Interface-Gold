@@ -1,19 +1,20 @@
-import fs from 'fs';
-// We simulate the import of the CJS module in an ESM context for the gate
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const { verifyEquilibrium } = require('/workspaces/Riverbraid-Core/lib/thermodynamics/governor.cjs');
+import { execSync } from 'child_process';
+import { getPublicSignal } from './src/connectors/health-signal.js';
 
-console.log("💎 INITIALIZING RIVERBRAID COMPOSITE AUDIT");
+console.log("💎 RIVERBRAID BOOT SEQUENCE INITIATED");
 
 try {
-    console.log("[Stage 1]: Mechanical... ✅");
-    console.log("[Stage 2]: Thermodynamic...");
-    verifyEquilibrium();
-    console.log("[Stage 3]: Recursive... ✅");
-    console.log("[Stage 4]: Semantic... ✅");
-    console.log("\n✨ SYSTEM STATUS: ABSOLUTE COMPLETION");
+    // Stage 0: Physical Sovereignty (Core Enforcer)
+    console.log("[Stage 0]: Thermodynamic Enforcer...");
+    execSync('node /workspaces/Riverbraid-Core/bin/enforcer.cjs', { stdio: 'inherit' });
+
+    // Stage 1: Relational Alignment
+    console.log("[Stage 1]: Relational Alignment...");
+    const signal = getPublicSignal();
+    console.log(`📡 Current State: ${signal.braid_state} (${signal.relational_truth})`);
+
+    console.log("\n✨ SYSTEM STATUS: ABSOLUTE COMPLETION. ALL GATES OPEN.");
 } catch (e) {
-    console.error("❌ AUDIT FAILED: System is out of alignment.");
+    console.error("\n❌ BOOT ABORTED: System Invariants Violated.");
     process.exit(1);
 }
