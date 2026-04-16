@@ -1,43 +1,38 @@
-// Riverbraid-Interface-Gold/src/runtime-binding.js
-// Tight runtime coupling: Riverbraid-Core validator injected into every initialization loop
+const { execSync } = require('child_process');
+const fs = require('fs');
 const { verifySwarm, getCurrentRoot } = require('../bin/verify-swarm.cjs');
 const shield = require('../riverbraid-shield');
 
+function verifyAnchor(context) {
+  const root = getCurrentRoot();
+  if (!fs.existsSync('.anchor.asc')) {
+    console.error(`❌ ${context}: Missing GPG-signed .anchor.asc`);
+    process.exit(1);
+  }
+  try {
+    // Structural Gate: verify the signature of the anchor
+    execSync(`gpg --verify .anchor.asc .anchor`, { stdio: 'ignore' });
+  } catch (e) {
+    console.error(`❌ ${context}: GPG signature verification failed`);
+    process.exit(1);
+  }
+  const anchoredRoot = fs.readFileSync('.anchor', 'utf8').trim();
+  if (anchoredRoot !== root) {
+    console.error(`❌ ${context}: Anchor content mismatch`);
+    process.exit(1);
+  }
+  return true;
+}
+
 function enforceCoreValidator(context) {
-  const root = getCurrentRoot(); // must be 01a777
+  verifyAnchor(context);
+  const root = getCurrentRoot();
   if (!verifySwarm(root)) {
-    console.error(`❌ Riverbraid: ${context} failed stationary check (root drift detected)`);
-    process.exit(1); // hard fail-closed
+    console.error(`❌ ${context}: failed swarm check`);
+    process.exit(1);
   }
   shield.logAttestation(context, root);
-  console.log(`✅ Riverbraid Core validator passed for ${context} (root: ${root})`);
+  console.log(`✅ ${context}: Hardened GPG-Anchor Verified`);
 }
 
-function bindP5(p5Instance) {
-  const originalSetup = p5Instance.setup || function () {};
-  p5Instance.setup = function () {
-    enforceCoreValidator("p5-setup");
-    originalSetup.call(this);
-  };
-
-  const originalDraw = p5Instance.draw || function () {};
-  p5Instance.draw = function () {
-    enforceCoreValidator("p5-draw");
-    originalDraw.call(this);
-  };
-
-  console.log("✅ p5.js fully coupled to Riverbraid-Core");
-}
-
-function bindHydra(hydraSynth) {
-  const originalEval = hydraSynth.eval || function () {};
-
-  hydraSynth.eval = function (code) {
-    enforceCoreValidator("hydra-eval");
-    return originalEval.call(this, code);
-  };
-
-  console.log("✅ Hydra fully coupled to Riverbraid-Core");
-}
-
-module.exports = { bindP5, bindHydra, enforceCoreValidator };
+module.exports = { enforceCoreValidator };
