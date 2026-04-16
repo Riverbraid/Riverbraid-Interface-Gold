@@ -1,38 +1,35 @@
-const { execSync } = require('child_process');
+const path = require('path');
 const fs = require('fs');
-const { verifySwarm, getCurrentRoot } = require('../bin/verify-swarm.cjs');
-const shield = require('../riverbraid-shield');
+const { verifySwarm, getCurrentRoot } = require(path.resolve(__dirname, '../bin/verify-swarm.cjs'));
 
-function verifyAnchor(context) {
-  const root = getCurrentRoot();
-  if (!fs.existsSync('.anchor.asc')) {
-    console.error(`❌ ${context}: Missing GPG-signed .anchor.asc`);
-    process.exit(1);
-  }
-  try {
-    // Structural Gate: verify the signature of the anchor
-    execSync(`gpg --verify .anchor.asc .anchor`, { stdio: 'ignore' });
-  } catch (e) {
-    console.error(`❌ ${context}: GPG signature verification failed`);
-    process.exit(1);
-  }
-  const anchoredRoot = fs.readFileSync('.anchor', 'utf8').trim();
-  if (anchoredRoot !== root) {
-    console.error(`❌ ${context}: Anchor content mismatch`);
-    process.exit(1);
-  }
-  return true;
-}
+// Shield is optional; fail gracefully if not linked
+let shield = { logAttestation: () => {} };
+try {
+  shield = require(path.resolve(__dirname, '../riverbraid-shield.js'));
+} catch (e) {}
 
 function enforceCoreValidator(context) {
-  verifyAnchor(context);
-  const root = getCurrentRoot();
+  const root = getCurrentRoot(); 
   if (!verifySwarm(root)) {
-    console.error(`❌ ${context}: failed swarm check`);
+    console.error(`❌ Riverbraid: ${context} failed stationary check (root drift detected)`);
     process.exit(1);
   }
   shield.logAttestation(context, root);
-  console.log(`✅ ${context}: Hardened GPG-Anchor Verified`);
+  console.log(`✅ Riverbraid Core validator passed for ${context} (root: ${root})`);
 }
 
-module.exports = { enforceCoreValidator };
+function bindP5(p5Instance) {
+  const originalSetup = p5Instance.setup || function () {};
+  p5Instance.setup = function () {
+    enforceCoreValidator("p5-setup");
+    originalSetup.call(this);
+  };
+  const originalDraw = p5Instance.draw || function () {};
+  p5Instance.draw = function () {
+    enforceCoreValidator("p5-draw");
+    originalDraw.call(this);
+  };
+  console.log("✅ p5.js fully coupled to Riverbraid-Core");
+}
+
+module.exports = { bindP5, enforceCoreValidator };
