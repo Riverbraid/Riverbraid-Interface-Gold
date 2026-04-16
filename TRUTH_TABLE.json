@@ -1,0 +1,14 @@
+{
+  "system": "Riverbraid",
+  "version": "1.1.0-Gold",
+  "invariants": {
+    "mechanical": "Quorum > 66%",
+    "thermodynamic": "Entropy < 4.0 bits/sym",
+    "semantic": "Meaning tied to Root",
+    "physical": "Hardware-Software Binding via SHA-256"
+  },
+  "constants": {
+    "anchor": "01a777",
+    "hardware_node": "28c98bd1790dcbbb"
+  }
+}
