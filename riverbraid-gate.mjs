@@ -12,21 +12,38 @@ async function runBraidAudit() {
     const anchor = "01a777";
 
     const stages = [
-        { name: "Mechanical", fn: () => enforceCoreValidator('Final-Seal') || true },
-        { name: "Thermodynamic", fn: () => verifyEntropySignal() },
-        { name: "Recursive", fn: () => verifyChain("0", anchor, "NODE-01", "cce6b49842f216515b2e9d96b1f2b62d2948b8c546c1926b48a044390666063b") },
-        { name: "Execution", fn: async () => await executeSecure('./wasm/core.wasm', 1) },
-        { name: "Semantic", fn: () => translateState(anchor) || true }
+        { 
+            name: "Mechanical", 
+            fn: () => { enforceCoreValidator('Final-Seal'); return true; } 
+        },
+        { 
+            name: "Thermodynamic", 
+            fn: () => verifyEntropySignal() 
+        },
+        { 
+            name: "Recursive", 
+            fn: () => verifyChain("0", anchor, "NODE-01", "cce6b49842f216515b2e9d96b1f2b62d2948b8c546c1926b48a044390666063b") 
+        },
+        { 
+            name: "Execution", 
+            fn: async () => await executeSecure('./wasm/core.wasm', 1) 
+        },
+        { 
+            name: "Semantic", 
+            fn: () => { translateState(anchor); return true; } 
+        }
     ];
 
     for (const stage of stages) {
         process.stdout.write(`[Stage]: ${stage.name}... `);
-        const result = await stage.fn();
-        if (!result) {
-            console.log("❌ FAILED");
+        try {
+            const result = await stage.fn();
+            if (!result) throw new Error("Validation returned false");
+            console.log("✅");
+        } catch (e) {
+            console.log(`❌ FAILED (${e.message})`);
             process.exit(1);
         }
-        console.log("✅");
     }
 
     console.log("\n✨ SYSTEM STATUS: FULLY ESTABLISHED AND TRUTHFUL");
