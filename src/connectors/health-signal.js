@@ -1,26 +1,23 @@
 import fs from 'fs';
 import path from 'path';
+import { generateTruthReport } from '../bridge/semantic-engine.js';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const { calculateShannonEntropy } = require('/workspaces/Riverbraid-Core/lib/thermodynamics/governor.cjs');
 
 export function getPublicSignal() {
-    const rootPath = path.join(process.cwd(), 'MERKLE_ROOT');
-    const root = fs.readFileSync(rootPath, 'utf8').trim();
+    const manifestPath = '/workspaces/Riverbraid-Core/MANIFEST.json';
+    const manifestContent = fs.readFileSync(manifestPath, 'utf8');
+    const entropy = calculateShannonEntropy(manifestContent);
     
-    let nodeId = "unknown";
-    try {
-        const manifestPath = '/workspaces/Riverbraid-Core/MANIFEST.json';
-        const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-        nodeId = manifest.nodeId;
-    } catch (e) {
-        nodeId = "detached-node";
-    }
+    const report = generateTruthReport(entropy);
     
     return {
         status: "COHERENT",
-        node: nodeId,
-        merkle_root: root,
-        braid_frequency: "Flame",
         timestamp: new Date().toISOString(),
-        integrity: "Stationary"
+        ...report,
+        entropy_signal: entropy.toFixed(4)
     };
 }
 
