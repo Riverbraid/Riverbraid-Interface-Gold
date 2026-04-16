@@ -4,11 +4,12 @@
   "invariants": {
     "mechanical": "Quorum > 66%",
     "thermodynamic": "Entropy < 4.0 bits/sym",
-    "semantic": "Meaning tied to Root",
-    "physical": "Hardware-Software Binding via SHA-256"
+    "semantic": "Meaning tied to Root (01a777)",
+    "physical": "Hardware-Software Binding via Node Fingerprint"
   },
   "constants": {
     "anchor": "01a777",
-    "hardware_node": "28c98bd1790dcbbb"
+    "hardware_node": "28c98bd1790dcbbb",
+    "birth_location": "Detroit, Michigan"
   }
 }
