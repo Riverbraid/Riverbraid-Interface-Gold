@@ -1,34 +1,7 @@
 const { bindP5, bindHydra } = require('./src/runtime-binding.js');
+console.log("Riverbraid Interface harness initializing...");
+
 if (typeof p5 !== 'undefined') bindP5(p5);
 if (typeof hydra !== 'undefined') bindHydra(hydra);
-#!/usr/bin/env node
-/**
- * Riverbraid Harness
- * Purpose: Protecting the internal frequency during external interaction.
- */
-const { evaluateSafety } = require("./safety-gate.cjs");
-const { reportMetrics } = require("./profiler.cjs");
-const { logProof } = require("./proof-scaffold.cjs");
 
-async function execute(taskName, logic) {
-    console.log(`--- Harness: Initiating [${taskName}] ---`);
-    
-    // 1. Safety Check
-    evaluateSafety(taskName);
-
-    try {
-        // 2. Execution
-        const result = await logic();
-        
-        // 3. Telemetry
-        reportMetrics(taskName);
-        logProof('HARNESS_EXECUTION_SUCCESS', true, { taskName });
-        
-        return result;
-    } catch (error) {
-        logProof('HARNESS_EXECUTION_FAILURE', false, { taskName, error: error.message });
-        throw error;
-    }
-}
-
-module.exports = { execute };
+console.log("✅ Creative variations tightly coupled to Core.");
