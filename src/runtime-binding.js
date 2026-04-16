@@ -1,40 +1,22 @@
-const path = require('path');
-const fs = require('fs');
+import { createRequire } from 'module';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-// Anchor to the actual workspace root
-const repoRoot = path.resolve(process.cwd());
-const binPath = path.join(repoRoot, 'bin/verify-swarm.cjs');
-const shieldPath = path.join(repoRoot, 'riverbraid-shield.js');
+const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const repoRoot = path.resolve(__dirname, '..');
+const binPath = path.join(repoRoot, 'bin', 'verify-swarm.cjs');
 
 const { verifySwarm, getCurrentRoot } = require(binPath);
 
-let shield = { logAttestation: () => {} };
-if (fs.existsSync(shieldPath)) {
-  shield = require(shieldPath);
+export function enforceCoreValidator(context) {
+    const root = getCurrentRoot();
+    if (!verifySwarm(root)) {
+        console.error(`❌ Riverbraid: ${context} failed stationary check`);
+        process.exit(1);
+    }
+    console.log(`✅ Validator OK: ${context} (${root})`);
 }
-
-function enforceCoreValidator(context) {
-  const root = getCurrentRoot(); 
-  if (!verifySwarm(root)) {
-    console.error(`❌ Riverbraid: ${context} failed stationary check`);
-    process.exit(1);
-  }
-  shield.logAttestation(context, root);
-  console.log(`✅ Riverbraid Core validator passed for ${context} (root: ${root})`);
-}
-
-function bindP5(p5Instance) {
-  const originalSetup = p5Instance.setup || function () {};
-  p5Instance.setup = function () {
-    enforceCoreValidator("p5-setup");
-    originalSetup.call(this);
-  };
-  const originalDraw = p5Instance.draw || function () {};
-  p5Instance.draw = function () {
-    enforceCoreValidator("p5-draw");
-    originalDraw.call(this);
-  };
-  console.log("✅ p5.js fully coupled to Riverbraid-Core");
-}
-
-module.exports = { bindP5, enforceCoreValidator };

@@ -1,0 +1,1 @@
+/workspaces/Riverbraid-Core/riverbraid-shield.js
