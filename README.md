@@ -1,21 +1,11 @@
-# Riverbraid Interface Gold v1.1.0
+# Riverbraid Interface Gold
 
-## 💎 System Invariant
-**"Mechanical Honesty is the prerequisite for relational truth."**
+The relational bridge for the Riverbraid system.
 
 ## 🏗️ Architecture
-This node is part of a sovereign braid, bound to hardware and verified by recursive entropy checks.
+- **Stage 0:** Thermodynamic Sovereignty (via @riverbraid/core)
+- **Stage 1:** Semantic Resonance (Flame/Current/Reflection)
 
-### 1. The Core Layer (`Riverbraid-Core`)
-- **Truth Source:** `MERKLE_ROOT`
-- **Integrity:** `MANIFEST.json` (Hardware-Signed)
-- **Recovery:** `bin/recovery/self-heal.cjs`
-
-### 2. The Interface Layer (`Riverbraid-Interface-Gold`)
-- **Gate:** `riverbraid-gate.mjs` (Audit Sentinel)
-- **Bridge:** `src/semantic-bridge.js` (Meaning Translation)
-- **Signal:** `src/connectors/health-signal.js` (Public Broadcast)
-
-## 🛠️ Verification
-To prove the truth of this node, execute:
-`node riverbraid-gate.mjs`
+## 📡 Usage
+- `braid boot`: Executes the full composite audit and initiates the node.
+- `braid signal`: Generates a real-time relational truth report.
