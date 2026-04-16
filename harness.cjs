@@ -1,3 +1,6 @@
+const { bindP5, bindHydra } = require('./src/runtime-binding.js');
+if (typeof p5 !== 'undefined') bindP5(p5);
+if (typeof hydra !== 'undefined') bindHydra(hydra);
 #!/usr/bin/env node
 /**
  * Riverbraid Harness
