@@ -6,6 +6,7 @@ const coreDir = '/workspaces/Riverbraid-Core';
 const verifyPath = path.join(coreDir, 'bin/verify-swarm.cjs');
 
 function enforceCoreValidator(context) {
+    if (!fs.existsSync(verifyPath)) {
         console.error('❌ ' + context + ': Physical dependency missing at ' + verifyPath);
         process.exit(1);
     }
@@ -16,6 +17,7 @@ function enforceCoreValidator(context) {
     const anchorPath = '/workspaces/Riverbraid-Interface-Gold/.anchor';
     const sigPath = '/workspaces/Riverbraid-Interface-Gold/.anchor.asc';
 
+    if (!fs.existsSync(anchorPath) || !fs.existsSync(sigPath)) {
         console.error('❌ ' + context + ': Missing GPG-signed .anchor or .anchor.asc');
         process.exit(1);
     }
@@ -33,6 +35,7 @@ function enforceCoreValidator(context) {
         process.exit(1);
     }
 
+    if (!verifySwarm(root)) {
         console.error('❌ ' + context + ': Swarm verification failed.');
         process.exit(1);
     }
