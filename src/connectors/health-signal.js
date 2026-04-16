@@ -5,10 +5,10 @@ export function getPublicSignal() {
     const rootPath = path.join(process.cwd(), 'MERKLE_ROOT');
     const root = fs.readFileSync(rootPath, 'utf8').trim();
     
-    // Attempt to pull hardware context from Core manifest
     let nodeId = "unknown";
     try {
-        const manifest = JSON.parse(fs.readFileSync('/workspaces/Riverbraid-Core/MANIFEST.json', 'utf8'));
+        const manifestPath = '/workspaces/Riverbraid-Core/MANIFEST.json';
+        const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
         nodeId = manifest.nodeId;
     } catch (e) {
         nodeId = "detached-node";
