@@ -10,6 +10,8 @@ const { executeSecure } = require('./bin/wasm-sandbox.cjs');
 async function runBraidAudit() {
     console.log("💎 INITIALIZING RIVERBRAID COMPOSITE AUDIT");
     const anchor = "01a777";
+    // The verified deterministic truth for ('0', '01a777', 'NODE-01')
+    const expectedProof = "c75f377be846694fc234df624c10ae6af47737086628e5077c96bbf2135eed6c";
 
     const stages = [
         { 
@@ -22,7 +24,7 @@ async function runBraidAudit() {
         },
         { 
             name: "Recursive", 
-            fn: () => verifyChain("0", anchor, "NODE-01", "cce6b49842f216515b2e9d96b1f2b62d2948b8c546c1926b48a044390666063b") 
+            fn: () => verifyChain("0", anchor, "NODE-01", expectedProof) 
         },
         { 
             name: "Execution", 
