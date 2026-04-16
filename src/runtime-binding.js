@@ -1,17 +1,22 @@
 const path = require('path');
 const fs = require('fs');
-const { verifySwarm, getCurrentRoot } = require(path.resolve(__dirname, '../bin/verify-swarm.cjs'));
 
-// Shield is optional; fail gracefully if not linked
+// Anchor to the actual workspace root
+const repoRoot = path.resolve(process.cwd());
+const binPath = path.join(repoRoot, 'bin/verify-swarm.cjs');
+const shieldPath = path.join(repoRoot, 'riverbraid-shield.js');
+
+const { verifySwarm, getCurrentRoot } = require(binPath);
+
 let shield = { logAttestation: () => {} };
-try {
-  shield = require(path.resolve(__dirname, '../riverbraid-shield.js'));
-} catch (e) {}
+if (fs.existsSync(shieldPath)) {
+  shield = require(shieldPath);
+}
 
 function enforceCoreValidator(context) {
   const root = getCurrentRoot(); 
   if (!verifySwarm(root)) {
-    console.error(`❌ Riverbraid: ${context} failed stationary check (root drift detected)`);
+    console.error(`❌ Riverbraid: ${context} failed stationary check`);
     process.exit(1);
   }
   shield.logAttestation(context, root);
