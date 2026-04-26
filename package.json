@@ -1,0 +1,7 @@
+﻿{
+    "name":  "riverbraid-interface",
+    "version":  "1.0.0",
+    "scripts":  {
+                    "test":  "node -e \"console.log(\u0027riverbraid-interface: Verified\u0027)\""
+                }
+}
