@@ -1,0 +1,13 @@
+{
+  "schema": "riverbraid.gold.verify.output",
+  "version": "1.0.0",
+  "repo": "Riverbraid-Interface-Gold",
+  "ring": 1,
+  "petal": "Interface-Gold",
+  "invariant": "INTERFACE_STATIONARY",
+  "status": "VERIFIED",
+  "result": true,
+  "expected_result": true,
+  "canonical_signal": "interface-gold:STATIONARY",
+  "canonical_reason": "Stationary fields match declared petal identity"
+}

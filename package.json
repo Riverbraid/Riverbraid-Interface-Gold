@@ -1,8 +1,15 @@
 {
-  "name": "riverbraid-interface",
+  "name": "@riverbraid/interface-gold",
   "version": "1.0.0",
   "scripts": {
-    "test": "npm run verify:feature-flow",
-    "verify:feature-flow": "node verify-feature-flow.cjs"
-  }
+    "test": "node verify.mjs",
+    "verify:feature-flow": "node verify-feature-flow.cjs",
+    "test:legacy": "npm run verify:feature-flow",
+    "verify": "node verify.mjs"
+  },
+  "private": true,
+  "type": "module",
+  "description": "Riverbraid Gold petal for deterministic stationarity verification.",
+  "main": "index.js",
+  "license": "MIT"
 }
